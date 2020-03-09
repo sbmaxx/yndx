@@ -28,6 +28,9 @@
             font-size: 20vw;
             font-weight: 700;
         }
+        .spacing {
+            letter-spacing: 4px;
+        }
     </style>
 
 </head>
@@ -50,6 +53,7 @@ fetch('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=YN
             let Stocks = Object.keys(stock["Time Series (5min)"]).map(function(key) { return stock["Time Series (5min)"][key]; })
             console.log(Stocks[0]["4. close"])
             yandex = Stocks[0]["4. close"]
+            document.querySelector('.ticker').innerHTML = '<span class="spacing">YNDX</span> –– <span class="spacing">$' + yandex + '</span>'
         }
     )
     .then(final => {
