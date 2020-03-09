@@ -8,10 +8,27 @@
 <body>
 
 <script>
+let usd, yandex;
+
 fetch('https://www.cbr-xml-daily.ru/daily_json.js')
-  .then(response => response.json())
-  .then(rates => console.log(rates.Valute.USD));
+    .then(response => response.json())
+    .then(rates => {
+            console.log(rates.Valute.USD)
+            usd = rates.Valute.USD.Value
+        }
+    );
+
+fetch('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=YNDX&interval=5min&apikey=1QTGAEJ58CP0B4J9')
+    .then(response => response.json())
+    .then(stock => {
+            let Stocks = Object.keys(stock["Time Series (5min)"]).map(function(key) { return stock["Time Series (5min)"][key]; })
+            console.log(Stocks[0]["4. close"])
+            yandex = Stocks[0]["4. close"]
+        }
+    )
+    .then(final => console.log('Стоимость акций Яндекса:', Math.round(usd*yandex) + '₽'))
 </script>
 
 </body>
 </html>
+
