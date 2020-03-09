@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Real Stock YNDX</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <link rel="apple-touch-icon" href="i/apple-touch-icon.png" />
     <link rel="apple-touch-icon" sizes="57x57" href="i/apple-touch-icon-57x57.png" />
@@ -19,22 +20,24 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: #55b9f3;
-            margin: 6px;
+            background-color: #111111;
+            background-image: url(https://source.unsplash.com/random/414x896);
+            background-size: cover;
+            margin: 10px;
             color: #000;
         }
         .card {
             position: fixed;
-            width: calc(100% - 12px);
-            height: calc(100% - 12px);
-            border-radius: 7px;
+            width: calc(100% - 20px);
+            height: calc(100% - 20px);
+            border-radius: 32px;
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            background-color: #ffffff;
-            box-shadow: 20px 20px 60px #489dcf, 
-                        -20px -20px 60px #62d5ff;
+            background-color: rgba(255,255,255,.4);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
         }
         .headline {
             font-size: 20vw;
