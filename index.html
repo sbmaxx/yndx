@@ -4,6 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #55b9f3;
+            margin: 6px;
+            color: #000;
+        }
+        .card {
+            position: fixed;
+            width: calc(100% - 12px);
+            height: calc(100% - 12px);
+            border-radius: 7px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: #ffffff;
+            box-shadow: 20px 20px 60px #489dcf, 
+                        -20px -20px 60px #62d5ff;
+        }
+        .headline {
+            font-size: 20vw;
+            font-weight: 700;
+        }
+    </style>
+
 </head>
 <body>
 
@@ -26,8 +52,17 @@ fetch('https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=YN
             yandex = Stocks[0]["4. close"]
         }
     )
-    .then(final => console.log('Стоимость акций Яндекса:', Math.round(usd*yandex) + '₽'))
+    .then(final => {
+            console.log('Стоимость акций Яндекса:', Math.round(usd*yandex) + '₽')
+            document.querySelector('.headline').innerHTML = Math.round(usd*yandex) + '<span style="font-weight: 400">₽</span>'
+        }
+    )
 </script>
+
+<div class="card">
+    <div class="ticker">YNDX</div>
+    <div class="headline">–</div>
+</div>
 
 </body>
 </html>
