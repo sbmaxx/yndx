@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yndx Stocks</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="shortcut icon" href="https://yastatic.net/s3/home-static/_/7c/7ccfee6f1e81b14c5bef535d1ad7b7e0.png"
+        type="image/x-icon" />
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #000;
+            margin: 0px;
+            color: #fff;
+            transition: background-image 1s;
+            background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII=);
+            background-attachment: fixed;
+            background-size: cover;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            box-sizing: border-box;
+        }
+
+        .card {
+            box-sizing: border-box;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.7) 70%, rgba(0, 0, 0, 0.8) 100%);
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 10px;
+            bottom: 0;
+            top: 0;
+            position: absolute;
+
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .card-content+.card-content {
+            margin-top: 40px;
+        }
+
+        .headline {
+            font-size: 18vh;
+            line-height: 18vh;
+            font-weight: 200;
+        }
+
+        .change,
+        .price-usd {
+            font-size: 6vw;
+            padding-left: 10px;
+            line-height: 8vw;
+            font-weight: 200;
+        }
+
+        .ticker {
+            padding: 0 0 0 4px;
+        }
+
+        .spacing {
+            letter-spacing: 4px;
+        }
+
+        #card-moex .price {
+            cursor: pointer;
+        }
+
+        .red {
+            color: #db5856;
+        }
+
+        .green {
+            color: #77dd77;
+        }
+
+        .dot {
+            opacity: 0;
+            animation: dot 1.3s infinite;
+        }
+
+        .dot-one {
+            animation-delay: 0.0s;
+        }
+
+        .dot-two {
+            animation-delay: 0.2s;
+        }
+
+        .dot-three {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes dot {
+            0% {
+                opacity: 0;
+            }
+
+            50% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+
+        @media (max-width:768px) {
+            .headline {
+                font-size: 16vw;
+                line-height: 16vw;
+            }
+
+            .change {
+                font-weight: 300;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="card">
+        <div class="card-content" id="card-nasdaq">
+            <div class="ticker"><span class="spacing">YNDX</span></div>
+            <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
+        </div>
+
+        <div class="card-content" id="card-moex">
+            <div class="ticker">YNDX (MOEX)</div>
+            <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
+        </div>
+
+        <div class="card-content" id="card-forex">
+            <div class="ticker">USD/RUB</div>
+            <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
+        </div>
+
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    const $ = document.querySelector.bind(document);
+    const $$ = document.querySelectorAll.bind(document);
+
+    const animateTemplate = '<span class="dot dot-one">.</span><span class="dot dot-two">.</span><span class="dot dot-three">.</span>';
+
+    [].slice.apply($$('.price')).forEach(e => e.innerHTML = animateTemplate);
+
+    const phone = 'https://source.unsplash.com/780x1688';
+    const desktop = 'https://source.unsplash.com/2560x1600';
+    const img = window.innerWidth <= 768 ? phone : desktop;
+
+    const image = new Image();
+    image.src = img;
+
+    setTimeout(() => {
+        document.body.classList.add('loaded');
+    }, 2000);
+
+    image.onload = function (e) {
+        document.body.style.backgroundImage = `url(${img})`;
+        document.body.classList.add('loaded');
+    };
+
+    // proxy to 'https://yfapi.net/v6/finance/quote?region=RU&lang=RU&symbols=YNDX%2CYNDX.ME%2CUSDRUB%3DX'
+    fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
+        const nasdaq = data.quoteResponse.result[0];
+        const moex = data.quoteResponse.result[1];
+        const forex = data.quoteResponse.result[2];
+
+        const nasdaqPrice = 99.99 || nasdaq.regularMarketPrice.toFixed(2);
+        const nasdaqChange = nasdaq.regularMarketChange.toFixed(2);
+
+        const moexPrice = 3000 || moex.regularMarketPrice;
+        const moexChange = moex.regularMarketChange.toFixed(0);
+
+        const forexPrice = 30.01 || forex.regularMarketPrice.toFixed(2);
+        const forexChange = forex.regularMarketChange.toFixed(2);
+
+        // nasdaq
+        let nasdaqPostfix = (nasdaqChange > 0 ? '+' : '') + nasdaqChange.toString().replace('-', '−');
+        let nasdaqColor = nasdaqChange > 0 ? 'green' : 'red';
+        let nasdaqContent = '$' + nasdaqPrice;
+
+        $('#card-nasdaq .headline .price').innerHTML = nasdaqContent;
+        $('#card-nasdaq .headline .change').innerHTML = nasdaqPostfix;
+        $('#card-nasdaq .headline .change').classList.add(nasdaqColor);
+
+        // moex
+        let moexPostfix = (moexChange > 0 ? '+' : '') + moexChange.toString().replace('-', '−');
+        let moexColor = moexChange > 0 ? 'green' : 'red';
+        let moexContent = moexPrice + '₽';
+
+        let moexUsdContent = '$' + (moexPrice / forexPrice).toFixed(2);
+        let moexUsdPostfix = (moexChange > 0 ? '+' : '') + (moexChange / forexPrice).toFixed(2).toString().replace('-', '−');;
+
+        $('#card-moex .headline .price').innerHTML = moexContent;
+        $('#card-moex .headline .change').innerHTML = moexPostfix;
+        $('#card-moex .headline .change').classList.add(moexColor);
+
+        // forex
+        let clickState = 0;
+        document.querySelector('#card-moex .headline .price').addEventListener('click', () => {
+            if (clickState === 0) {
+                $('#card-moex .headline .price').innerHTML = moexUsdContent;
+                $('#card-moex .headline .change').innerHTML = moexUsdPostfix;
+                clickState = 1;
+            } else {
+                $('#card-moex .headline .price').innerHTML = moexContent;
+                $('#card-moex .headline .change').innerHTML = moexPostfix;
+                clickState = 0;
+            }
+        }, false);
+
+        // usdrub
+        let forexPostfix = (forexChange > 0 ? '+' : '') + forexChange.toString().replace('-', '−');
+        let forexColor = forexChange > 0 ? 'red' : 'green';
+        let forexContent = forexPrice + '₽';
+
+        $('#card-forex .headline .price').innerHTML = forexContent;
+        $('#card-forex .headline .change').innerHTML = forexPostfix;
+        $('#card-forex .headline .change').classList.add(forexColor);
+    }).catch(e => {
+        console.error(e);
+    });
+
+</script>
+
+</html>
