@@ -79,6 +79,10 @@
             color: #77dd77;
         }
 
+        .gray {
+            color: #cfcfc4;
+        }
+
         .dot {
             opacity: 0;
             animation: dot 1.3s infinite;
@@ -155,21 +159,25 @@
 
     [].slice.apply($$('.price')).forEach(e => e.innerHTML = animateTemplate);
 
-    const phone = 'https://source.unsplash.com/780x1688';
-    const desktop = 'https://source.unsplash.com/2560x1600';
-    const img = window.innerWidth <= 768 ? phone : desktop;
+    loadBackground();
 
-    const image = new Image();
-    image.src = img;
+    function loadBackground() {
+        const phone = 'https://source.unsplash.com/780x1688';
+        const desktop = 'https://source.unsplash.com/2560x1600';
+        const img = window.innerWidth <= 768 ? phone : desktop;
 
-    setTimeout(() => {
-        document.body.classList.add('loaded');
-    }, 2000);
+        const image = new Image();
+        image.src = img;
 
-    image.onload = function (e) {
-        document.body.style.backgroundImage = `url(${img})`;
-        document.body.classList.add('loaded');
-    };
+        setTimeout(() => {
+            document.body.classList.add('loaded');
+        }, 2000);
+
+        image.onload = function (e) {
+            document.body.style.backgroundImage = `url(${img})`;
+            document.body.classList.add('loaded');
+        };
+    }
 
     // proxy to 'https://yfapi.net/v6/finance/quote?region=RU&lang=RU&symbols=YNDX%2CYNDX.ME%2CUSDRUB%3DX'
     fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
@@ -178,17 +186,22 @@
         const forex = data.quoteResponse.result[2];
 
         const nasdaqPrice = nasdaq.regularMarketPrice.toFixed(2);
-        const nasdaqChange = nasdaq.regularMarketChange.toFixed(2);
+        const nasdaqChange = nasdaq.regularMarketChange;
 
         const moexPrice = moex.regularMarketPrice;
-        const moexChange = moex.regularMarketChange.toFixed(0);
+        const moexChange = moex.regularMarketChange;
 
         const forexPrice = forex.regularMarketPrice.toFixed(2);
-        const forexChange = forex.regularMarketChange.toFixed(2);
+        const forexChange = forex.regularMarketChange;
+
+        let mood = 0;
+        mood += nasdaqChange === 0 ? 0 : nasdaqChange > 0 ? 1 : - 1;
+        mood += moexChange === 0 ? 0 : moexChange > 0 ? 1 : - 1;
+        mood += forexChange === 0 ? 0 : forexChange > 0 ? 1 : - 1;
 
         // nasdaq
-        let nasdaqPostfix = (nasdaqChange > 0 ? '+' : '') + nasdaqChange.toString().replace('-', '−');
-        let nasdaqColor = nasdaqChange > 0 ? 'green' : 'red';
+        let nasdaqPostfix = (nasdaqChange > 0 ? '+' : '') + nasdaqChange.toFixed(2).replace('-', '−');
+        let nasdaqColor = nasdaqChange === 0 ? 'gray' : nasdaqChange > 0 ? 'green' : 'red';
         let nasdaqContent = '$' + nasdaqPrice;
 
         $('#card-nasdaq .headline .price').innerHTML = nasdaqContent;
@@ -196,12 +209,12 @@
         $('#card-nasdaq .headline .change').classList.add(nasdaqColor);
 
         // moex
-        let moexPostfix = (moexChange > 0 ? '+' : '') + moexChange.toString().replace('-', '−');
-        let moexColor = moexChange > 0 ? 'green' : 'red';
+        let moexPostfix = (moexChange > 0 ? '+' : '') + moexChange.toFixed(2).replace('-', '−');
+        let moexColor = moexChange === 0 ? 'gray' : moexChange > 0 ? 'green' : 'red';
         let moexContent = moexPrice + '₽';
 
         let moexUsdContent = '$' + (moexPrice / forexPrice).toFixed(2);
-        let moexUsdPostfix = (moexChange > 0 ? '+' : '') + (moexChange / forexPrice).toFixed(2).toString().replace('-', '−');;
+        let moexUsdPostfix = (moexChange > 0 ? '+' : '') + (moexChange / forexPrice).toFixed(2).replace('-', '−');;
 
         $('#card-moex .headline .price').innerHTML = moexContent;
         $('#card-moex .headline .change').innerHTML = moexPostfix;
@@ -222,8 +235,8 @@
         }, false);
 
         // usdrub
-        let forexPostfix = (forexChange > 0 ? '+' : '') + forexChange.toString().replace('-', '−');
-        let forexColor = forexChange > 0 ? 'red' : 'green';
+        let forexPostfix = (forexChange > 0 ? '+' : '') + forexChange.toFixed(2).toString().replace('-', '−');
+        let forexColor = forexChange === 0 ? 'gray' : forexChange > 0 ? 'red' : 'green';
         let forexContent = forexPrice + '₽';
 
         $('#card-forex .headline .price').innerHTML = forexContent;
