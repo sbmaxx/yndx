@@ -7,7 +7,8 @@
     <title>Yndx Stocks</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="shortcut icon" href="https://yastatic.net/s3/home-static/_/7c/7ccfee6f1e81b14c5bef535d1ad7b7e0.png" type="image/x-icon" />
+    <link rel="shortcut icon" href="https://yastatic.net/s3/home-static/_/7c/7ccfee6f1e81b14c5bef535d1ad7b7e0.png"
+        type="image/x-icon" />
     <style>
         @font-face {
             font-family: "YS Text Regular";
@@ -47,7 +48,7 @@
         }
 
         .card-content+.card-content {
-            margin-top: 40px;
+            margin-top: 30px;
         }
 
         .ticker-wrapper,
@@ -66,24 +67,24 @@
 
         .change {
             display: inline-block;
-            width: 5ch;
+            width: 8ch;
             text-align: right;
         }
 
-        .change,
-        .price-usd {
-            font-size: 6vw;
+        .change {
+            font-size: 4vw;
             padding-left: 10px;
-            line-height: 8vw;
+            line-height: 6vw;
             font-weight: 200;
         }
 
         .ticker-wrapper {
             line-height: 16px;
         }
+
         .ticker {
             padding: 0 0 0 0;
-            font-size: 20px;
+            font-size: 30px;
             /* text-align: right; */
             text-align: left;
         }
@@ -129,9 +130,11 @@
             0% {
                 opacity: 0;
             }
+
             50% {
                 opacity: 0;
             }
+
             100% {
                 opacity: 1;
             }
@@ -142,7 +145,9 @@
                 font-size: 14vw;
                 line-height: 14vw;
             }
+
             .change {
+                font-size: 6vw;
                 font-weight: 300;
             }
         }
@@ -154,22 +159,30 @@
 
     <div class="card">
         <div class="card-content" id="card-nasdaq">
-            <div class="ticker-wrapper"><div class="ticker">YNDX</div></div>
+            <div class="ticker-wrapper">
+                <div class="ticker">YNDX</div>
+            </div>
             <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
         </div>
 
         <div class="card-content" id="card-moex">
-            <div class="ticker-wrapper"><div class="ticker">YNDX (MOEX)</div></div>
+            <div class="ticker-wrapper">
+                <div class="ticker">YNDX (MOEX)</div>
+            </div>
             <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
         </div>
 
         <div class="card-content" id="card-forex-usd">
-            <div class="ticker-wrapper"><div class="ticker">USDRUB</div></div>
+            <div class="ticker-wrapper">
+                <div class="ticker">USDRUB</div>
+            </div>
             <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
         </div>
 
         <div class="card-content" id="card-forex-eur">
-            <div class="ticker-wrapper"><div class="ticker">EURRUB</div></div>
+            <div class="ticker-wrapper">
+                <div class="ticker">EURRUB</div>
+            </div>
             <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
         </div>
     </div>
@@ -198,7 +211,7 @@
             document.body.classList.add('loaded');
         }, 2000);
 
-        image.onload = function(e) {
+        image.onload = function (e) {
             document.body.style.backgroundImage = `url(${img})`;
             document.body.classList.add('loaded');
         };
