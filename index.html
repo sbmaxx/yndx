@@ -32,6 +32,10 @@
             box-sizing: border-box;
         }
 
+        #card-nasdaq {
+            display: none;
+        }
+
         .card {
             box-sizing: border-box;
             background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.7) 70%, rgba(0, 0, 0, 0.8) 100%);
@@ -163,7 +167,7 @@
 
         <div class="card-content" id="card-moex">
             <div class="ticker-wrapper">
-                <div class="ticker">YNDX (MOEX)</div>
+                <div class="ticker">YNDX</div>
             </div>
             <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
         </div>
@@ -247,7 +251,7 @@
         $('#card-nasdaq .headline .change').classList.add(nasdaqColor);
 
         // moex
-        let moexPostfix = (moexChange > 0 ? '+' : '') + moexChange.toFixed(0).replace('-', '−');
+        let moexPostfix = (moexChange > 0 ? '+' : '') + moexChange.toFixed(1).replace('-', '−');
         let moexColor = moexChange === 0 ? 'gray' : moexChange > 0 ? 'green' : 'red';
         let moexContent = moexPrice.toFixed(0)[0] + '&nbsp;' + moexPrice.toFixed(0).slice(1) + '₽';
 
