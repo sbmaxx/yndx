@@ -67,10 +67,9 @@
 
         .change {
             display: inline-block;
-            width: 7ch;
+            width: 6ch;
             text-align: right;
             font-size: 4vw;
-            padding-left: 10px;
             line-height: 6vw;
             font-weight: 200;
         }
@@ -149,7 +148,7 @@
             }
         }
     </style>
-
+    <style class="change-tune"></style>
 </head>
 
 <body>
@@ -248,7 +247,7 @@
         $('#card-nasdaq .headline .change').classList.add(nasdaqColor);
 
         // moex
-        let moexPostfix = (moexChange > 0 ? '+' : '') + moexChange.toFixed(2).replace('-', '−');
+        let moexPostfix = (moexChange > 0 ? '+' : '') + moexChange.toFixed(0).replace('-', '−');
         let moexColor = moexChange === 0 ? 'gray' : moexChange > 0 ? 'green' : 'red';
         let moexContent = moexPrice.toFixed(0)[0] + '&nbsp;' + moexPrice.toFixed(0).slice(1) + '₽';
 
