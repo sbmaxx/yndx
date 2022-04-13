@@ -32,13 +32,18 @@
             box-sizing: border-box;
         }
 
-        #card-nasdaq {
+        .card-nasdaq {
             display: none;
+        }
+
+        table td {
+            width: 1%;
         }
 
         .card {
             box-sizing: border-box;
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.7) 70%, rgba(0, 0, 0, 0.8) 100%);
+            background: radial-gradient(at bottom right, rgba(0, 0, 0, 0.5) 10%, rgba(0, 0, 0, 0.4) 50%, transparent);
+            /* background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.7) 70%, rgba(0, 0, 0, 0.8) 100%); */
             display: flex;
             width: 100%;
             flex-direction: column;
@@ -51,49 +56,49 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
-        .card-content+.card-content {
-            margin-top: 30px;
+        .row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
         }
 
-        .ticker-wrapper,
-        .headline {
-            font-size: 14vh;
-            line-height: 14vh;
-            font-weight: 200;
+        .col {
+            display: flex;
+            flex-direction: column;
         }
 
-        .ticker-wrapper,
+        .row+.row {
+            margin-top: 12px;
+        }
+
         .price {
-            display: inline-block;
-            width: 6ch;
+            font-size: 84px;
+            line-height: 84px;
+            min-width: 270px;
+
+            text-align: right;
+        }
+
+        .ticker {
+            font-size: 40px;
+            line-height: 40px;
+
+            padding-top: 6px;
             text-align: right;
         }
 
         .change {
-            display: inline-block;
-            width: 6ch;
+            font-size: 30px;
+            line-height: 30px;
+
             text-align: right;
-            font-size: 6vw;
-            line-height: 6vw;
-            font-weight: 200;
         }
 
-        .ticker-wrapper {
-            line-height: 16px;
+        .invisible {
+            visibility: hidden;
         }
 
-        .ticker {
-            padding: 0;
-            font-size: 22px;
-            text-align: left;
-            font-weight: 100;
-        }
-
-        .spacing {
-            letter-spacing: 4px;
-        }
-
-        #card-moex .price {
+        .card-moex .price {
             cursor: pointer;
         }
 
@@ -139,18 +144,6 @@
                 opacity: 1;
             }
         }
-
-        @media (max-width:768px) {
-            .headline {
-                font-size: 14vw;
-                line-height: 14vw;
-            }
-
-            .change {
-                font-size: 6vw;
-                font-weight: 300;
-            }
-        }
     </style>
     <style class="change-tune"></style>
 </head>
@@ -158,30 +151,65 @@
 <body>
 
     <div class="card">
-        <div class="card-content" id="card-nasdaq">
+        <div class="row card-moex">
+            <div class="col">
+                <div class="ticker">YNDX</div>
+                <div class="change"></div>
+            </div>
+            <div class="col">
+                <div class="price"></div>
+            </div>
+        </div>
+        <div class="row card-forex-usd">
+            <div class="col">
+                <div class="ticker">USD</div>
+                <div class="change"></div>
+            </div>
+            <div class="col">
+                <div class="price"></div>
+            </div>
+        </div>
+        <div class="row card-forex-eur">
+            <div class="col">
+                <div class="ticker">EUR</div>
+                <div class="change"></div>
+            </div>
+            <div class="col">
+                <div class="price"></div>
+            </div>
+        </div>
+
+        <table style="display: none">
+            <tbody>
+                <tr class="card-moex">
+                    <td class="ticker">YNDX</td>
+                    <td class="price" rowspan="2">…</td>
+                </tr>
+                <tr class="card-moex">
+                    <td class="change"></td>
+                </tr>
+
+                <tr class="card-forex-usd">
+                    <td class="ticker">USD</td>
+                    <td class="price" rowspan="2">…</td>
+                </tr>
+                <tr class="card-forex-usd">
+                    <td class="change"></td>
+                </tr>
+
+                <tr class="card-forex-eur">
+                    <td class="ticker">EUR</td>
+                    <td class="price" rowspan="2">…</td>
+                </tr>
+                <tr class="card-forex-eur">
+                    <td class="change"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="card-nasdaq">
             <div class="ticker-wrapper">
                 <div class="ticker">YNDX</div>
-            </div>
-            <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
-        </div>
-
-        <div class="card-content" id="card-moex">
-            <div class="ticker-wrapper">
-                <div class="ticker">YNDX</div>
-            </div>
-            <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
-        </div>
-
-        <div class="card-content" id="card-forex-usd">
-            <div class="ticker-wrapper">
-                <div class="ticker">USDRUB</div>
-            </div>
-            <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
-        </div>
-
-        <div class="card-content" id="card-forex-eur">
-            <div class="ticker-wrapper">
-                <div class="ticker">EURRUB</div>
             </div>
             <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
         </div>
@@ -246,32 +274,32 @@
         let nasdaqColor = nasdaqChange === 0 ? 'gray' : nasdaqChange > 0 ? 'green' : 'red';
         let nasdaqContent = nasdaqPrice + '$';
 
-        $('#card-nasdaq .headline .price').innerHTML = nasdaqContent;
-        $('#card-nasdaq .headline .change').innerHTML = nasdaqPostfix;
-        $('#card-nasdaq .headline .change').classList.add(nasdaqColor);
+        $('.card-nasdaq .price').innerHTML = nasdaqContent;
+        $('.card-nasdaq .change').innerHTML = nasdaqPostfix;
+        $('.card-nasdaq .change').classList.add(nasdaqColor);
 
         // moex
         let moexPostfix = (moexChange > 0 ? '+' : '') + moexChange.toFixed(1).replace('-', '−');
         let moexColor = moexChange === 0 ? 'gray' : moexChange > 0 ? 'green' : 'red';
-        let moexContent = moexPrice.toFixed(0)[0] + '&nbsp;' + moexPrice.toFixed(0).slice(1) + '₽';
+        let moexContent = moexPrice.toFixed(0)[0] + '<span class="invisible">.</span>' + moexPrice.toFixed(0).slice(1) + '₽';
 
         let moexUsdContent = (moexPrice / forexUSDPrice).toFixed(2) + '$';
         let moexUsdPostfix = (moexChange > 0 ? '+' : '') + (moexChange / forexUSDPrice).toFixed(2).replace('-', '−');;
 
-        $('#card-moex .headline .price').innerHTML = moexContent;
-        $('#card-moex .headline .change').innerHTML = moexPostfix;
-        $('#card-moex .headline .change').classList.add(moexColor);
+        $('.card-moex .price').innerHTML = moexContent;
+        $('.card-moex .change').innerHTML = moexPostfix;
+        $('.card-moex .change').classList.add(moexColor);
 
         // forexUSD
         let clickState = 0;
-        document.querySelector('#card-moex .headline .price').addEventListener('click', () => {
+        document.querySelector('.card-moex .price').addEventListener('click', () => {
             if (clickState === 0) {
-                $('#card-moex .headline .price').innerHTML = moexUsdContent;
-                $('#card-moex .headline .change').innerHTML = moexUsdPostfix;
+                $('.card-moex .price').innerHTML = moexUsdContent;
+                $('.card-moex .change').innerHTML = moexUsdPostfix;
                 clickState = 1;
             } else {
-                $('#card-moex .headline .price').innerHTML = moexContent;
-                $('#card-moex .headline .change').innerHTML = moexPostfix;
+                $('.card-moex .price').innerHTML = moexContent;
+                $('.card-moex .change').innerHTML = moexPostfix;
                 clickState = 0;
             }
         }, false);
@@ -281,18 +309,18 @@
         let forexUSDColor = forexUSDChange === 0 ? 'gray' : forexUSDChange > 0 ? 'red' : 'green';
         let forexUSDContent = forexUSDPrice + '₽';
 
-        $('#card-forex-usd .headline .price').innerHTML = forexUSDContent;
-        $('#card-forex-usd .headline .change').innerHTML = forexUSDPostfix;
-        $('#card-forex-usd .headline .change').classList.add(forexUSDColor);
+        $('.card-forex-usd .price').innerHTML = forexUSDContent;
+        $('.card-forex-usd .change').innerHTML = forexUSDPostfix;
+        $('.card-forex-usd .change').classList.add(forexUSDColor);
 
         // eurrub
         let forexEURPostfix = (forexEURChange > 0 ? '+' : '') + forexEURChange.toFixed(2).toString().replace('-', '−');
         let forexEURColor = forexEURChange === 0 ? 'gray' : forexEURChange > 0 ? 'red' : 'green';
         let forexEURContent = forexEURPrice + '₽';
 
-        $('#card-forex-eur .headline .price').innerHTML = forexEURContent;
-        $('#card-forex-eur .headline .change').innerHTML = forexEURPostfix;
-        $('#card-forex-eur .headline .change').classList.add(forexEURColor);
+        $('.card-forex-eur .price').innerHTML = forexEURContent;
+        $('.card-forex-eur .change').innerHTML = forexEURPostfix;
+        $('.card-forex-eur .change').classList.add(forexEURColor);
     }).catch(e => {
         console.error(e);
     });
