@@ -50,15 +50,18 @@
             margin-top: 40px;
         }
 
+        .ticker-wrapper,
         .headline {
             font-size: 12vh;
             line-height: 12vh;
             font-weight: 200;
         }
 
+        .ticker-wrapper,
         .price {
             display: inline-block;
             width: 6ch;
+            text-align: right;
         }
 
         .change {
@@ -75,8 +78,14 @@
             font-weight: 200;
         }
 
+        .ticker-wrapper {
+            line-height: 16px;
+        }
         .ticker {
-            padding: 0 0 0 4px;
+            padding: 0 0 0 0;
+            font-size: 14px;
+            /* text-align: right; */
+            text-align: left;
         }
 
         .spacing {
@@ -145,22 +154,22 @@
 
     <div class="card">
         <div class="card-content" id="card-nasdaq">
-            <div class="ticker"><span class="spacing">YNDX</span></div>
+            <div class="ticker-wrapper"><div class="ticker">YNDX</div></div>
             <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
         </div>
 
         <div class="card-content" id="card-moex">
-            <div class="ticker">YNDX (MOEX)</div>
+            <div class="ticker-wrapper"><div class="ticker">YNDX (MOEX)</div></div>
             <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
         </div>
 
         <div class="card-content" id="card-forex-usd">
-            <div class="ticker">USDRUB</div>
+            <div class="ticker-wrapper"><div class="ticker">USDRUB</div></div>
             <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
         </div>
 
         <div class="card-content" id="card-forex-eur">
-            <div class="ticker">EURRUB</div>
+            <div class="ticker-wrapper"><div class="ticker">EURRUB</div></div>
             <div class="headline"><span class="spacing price">…</span><span class="change"></span></div>
         </div>
     </div>
