@@ -23,7 +23,7 @@
             position: fixed;
             box-sizing: border-box;
         }
-        
+
         .card {
             box-sizing: border-box;
             background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.7) 70%, rgba(0, 0, 0, 0.8) 100%);
@@ -38,17 +38,28 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-        
+
         .card-content+.card-content {
             margin-top: 40px;
         }
-        
+
         .headline {
             font-size: 12vh;
             line-height: 12vh;
             font-weight: 200;
         }
-        
+
+        .price {
+            display: inline-block;
+            width: 5ch;
+        }
+
+        .change {
+            display: inline-block;
+            width: 5ch;
+            text-align: right;
+        }
+
         .change,
         .price-usd {
             font-size: 6vw;
@@ -56,48 +67,48 @@
             line-height: 8vw;
             font-weight: 200;
         }
-        
+
         .ticker {
             padding: 0 0 0 4px;
         }
-        
+
         .spacing {
             letter-spacing: 4px;
         }
-        
+
         #card-moex .price {
             cursor: pointer;
         }
-        
+
         .red {
             color: #db5856;
         }
-        
+
         .green {
             color: #77dd77;
         }
-        
+
         .gray {
             color: #cfcfc4;
         }
-        
+
         .dot {
             opacity: 0;
             animation: dot 1.3s infinite;
         }
-        
+
         .dot-one {
             animation-delay: 0.0s;
         }
-        
+
         .dot-two {
             animation-delay: 0.2s;
         }
-        
+
         .dot-three {
             animation-delay: 0.3s;
         }
-        
+
         @keyframes dot {
             0% {
                 opacity: 0;
@@ -109,7 +120,7 @@
                 opacity: 1;
             }
         }
-        
+
         @media (max-width:768px) {
             .headline {
                 font-size: 14vw;
@@ -204,7 +215,7 @@
         // nasdaq
         let nasdaqPostfix = (nasdaqChange > 0 ? '+' : '') + nasdaqChange.toFixed(2).replace('-', '−');
         let nasdaqColor = nasdaqChange === 0 ? 'gray' : nasdaqChange > 0 ? 'green' : 'red';
-        let nasdaqContent = '$' + nasdaqPrice;
+        let nasdaqContent = nasdaqPrice + '$';
 
         $('#card-nasdaq .headline .price').innerHTML = nasdaqContent;
         $('#card-nasdaq .headline .change').innerHTML = nasdaqPostfix;
@@ -213,9 +224,9 @@
         // moex
         let moexPostfix = (moexChange > 0 ? '+' : '') + moexChange.toFixed(2).replace('-', '−');
         let moexColor = moexChange === 0 ? 'gray' : moexChange > 0 ? 'green' : 'red';
-        let moexContent = moexPrice + '₽';
+        let moexContent = moexPrice.toFixed(0) + '₽';
 
-        let moexUsdContent = '$' + (moexPrice / forexUSDPrice).toFixed(2);
+        let moexUsdContent = (moexPrice / forexUSDPrice).toFixed(2) + '$';
         let moexUsdPostfix = (moexChange > 0 ? '+' : '') + (moexChange / forexUSDPrice).toFixed(2).replace('-', '−');;
 
         $('#card-moex .headline .price').innerHTML = moexContent;
