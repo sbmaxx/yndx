@@ -269,13 +269,9 @@
 
     // proxy to 'https://yfapi.net/v6/finance/quote?region=RU&lang=RU&symbols=YNDX%2CYNDX.ME%2CUSDRUB%3DX'
     fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
-        const nasdaq = data.quoteResponse.result[0];
         const moex = data.quoteResponse.result[1];
         const forexUSD = data.quoteResponse.result[2];
         const forexEUR = data.quoteResponse.result[3];
-
-        const nasdaqPrice = nasdaq.regularMarketPrice.toFixed(2);
-        const nasdaqChange = nasdaq.regularMarketChange;
 
         const moexPrice = moex.regularMarketPrice;
         const moexChange = moex.regularMarketChange;
@@ -287,18 +283,8 @@
         const forexEURChange = forexEUR.regularMarketChange;
 
         let mood = 0;
-        mood += nasdaqChange === 0 ? 0 : nasdaqChange > 0 ? 1 : -1;
         mood += moexChange === 0 ? 0 : moexChange > 0 ? 1 : -1;
         mood += forexUSDChange === 0 ? 0 : forexUSDChange > 0 ? 1 : -1;
-
-        // nasdaq
-        let nasdaqPostfix = (nasdaqChange > 0 ? '+' : '') + nasdaqChange.toFixed(2).replace('-', '−');
-        let nasdaqColor = nasdaqChange === 0 ? 'gray' : nasdaqChange > 0 ? 'green' : 'red';
-        let nasdaqContent = nasdaqPrice + '$';
-
-        $('.card-nasdaq .price').innerHTML = nasdaqContent;
-        $('.card-nasdaq .change').innerHTML = nasdaqPostfix;
-        $('.card-nasdaq .change').classList.add(nasdaqColor);
 
         // moex
         let moexPostfix = (moexChange > 0 ? '+' : '') + moexChange.toFixed(2).replace('-', '−');
