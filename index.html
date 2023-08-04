@@ -250,8 +250,16 @@
     loadBackground();
 
     function loadBackground() {
-        const phone = 'https://rozhdestvenskiy.ru/yndx-stock-server/image/phone' || 'https://source.unsplash.com/780x1688';
-        const desktop = 'https://rozhdestvenskiy.ru/yndx-stock-server/image/desktop' || 'https://source.unsplash.com/2560x1600';
+        let phone, dekstop;
+
+        const isThisDayGreat = Math.random() < .04;
+        if (isThisDayGreat) {
+            phone = 'https://storage.yandexcloud.net/yndx-mikstime/touch-min.jpg';
+            desktop = 'https://storage.yandexcloud.net/yndx-mikstime/desktop-min.jpg';
+        } else {
+            phone = 'https://rozhdestvenskiy.ru/yndx-stock-server/image/phone' || 'https://source.unsplash.com/780x1688';
+            desktop = 'https://rozhdestvenskiy.ru/yndx-stock-server/image/desktop' || 'https://source.unsplash.com/2560x1600';
+        }
         const img = window.innerWidth <= 768 ? phone : desktop;
 
         const image = new Image();
