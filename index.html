@@ -304,7 +304,7 @@
 
         let mood = 0;
         mood += moexChange === 0 ? 0 : moexChange > 0 ? 1 : -1;
-        mood += forexUSDChange === 0 ? 0 : forexUSDChange > 0 ? 1 : -1;
+        mood += forexUSDChange === 0 ? 0 : forexUSDChange < 0 ? 1 : -1;
 
         // moex
         let moexPostfix = (moexChange > 0 ? '+' : '') + moexChange.toFixed(2).replace('-', '−');
