@@ -247,28 +247,48 @@
 
     [].slice.apply($$('.price')).forEach(e => e.innerHTML = animateTemplate);
 
-    loadBackground();
+    const backgroundPromise = new Promise((resolve, reject) => {
+        const typicalPhone = 'https://rozhdestvenskiy.ru/yndx-stock-server/image/phone' || 'https://source.unsplash.com/780x1688';
+        const typicalDesktop = 'https://rozhdestvenskiy.ru/yndx-stock-server/image/desktop' || 'https://source.unsplash.com/2560x1600';
 
-    function loadBackground() {
-        const phone = 'https://rozhdestvenskiy.ru/yndx-stock-server/image/phone' || 'https://source.unsplash.com/780x1688';
-        const desktop = 'https://rozhdestvenskiy.ru/yndx-stock-server/image/desktop' || 'https://source.unsplash.com/2560x1600';
-        const img = window.innerWidth <= 768 ? phone : desktop;
+        const sadPhone = 'https://storage.yandexcloud.net/yndx-mikstime/touch-min.jpg';
+        const sadDesktop = 'https://storage.yandexcloud.net/yndx-mikstime/desktop-min.jpg';
 
-        const image = new Image();
-        image.src = img;
+        const typicalImg = window.innerWidth <= 768 ? typicalPhone : typicalDesktop;
+        const SadImg = window.innerWidth <= 768 ? sadPhone : sadDesktop;
+
+        const typicalImage = new Image();
+        typicalImage.src = typicalImg;
+
+        const sadImage = new Image();
+        sadImage.src = SadImg;
 
         setTimeout(() => {
-            document.body.classList.add('loaded');
+            reject();
         }, 2000);
 
-        image.onload = function(e) {
-            document.body.style.backgroundImage = `url(${img})`;
-            document.body.classList.add('loaded');
+        let typicalImageLoaded, sadImageLoaded;
+        typicalImage.onload = function(e) {
+            typicalImageLoaded = true;
+            onImgLoad();
         };
-    }
+        sadImage.onload = function(e) {
+            sadImageLoaded = true;
+            onImgLoad();
+        };
+
+        function onImgLoad() {
+            if (typicalImageLoaded && sadImageLoaded) {
+                resolve({
+                    typicalImg,
+                    SadImg,
+                })
+            }
+        }
+    });
 
     // proxy to 'https://yfapi.net/v6/finance/quote?region=RU&lang=RU&symbols=YNDX%2CYNDX.ME%2CUSDRUB%3DX'
-    fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
+    const fetchPromise = fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
         const moex = data.quoteResponse.result[1];
         const forexUSD = data.quoteResponse.result[2];
         const forexEUR = data.quoteResponse.result[3];
@@ -329,9 +349,22 @@
         $('.card-forex-eur .price').innerHTML = forexEURContent;
         $('.card-forex-eur .change').innerHTML = forexEURPostfix;
         $('.card-forex-eur .change').classList.add(forexEURColor);
+        return mood;
     }).catch(e => {
         console.error(e);
     });
+    Promise.allSettled([
+        backgroundPromise,
+        fetchPromise
+    ]).then(([backgroundRes, moodRes]) => {
+        const mood = moodRes.status === 'fulfilled' ? moodRes.value : 0;
+
+        if (backgroundRes.status === "fulfilled") {
+            const {SadImg, typicalImg} = backgroundRes.value;
+            document.body.style.backgroundImage = `url(${mood < 0 && Math.random() < 0.1 ? SadImg : typicalImg })`;
+        }
+        document.body.classList.add('loaded');
+    })
 </script>
 
 </html>
