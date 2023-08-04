@@ -90,7 +90,6 @@
         .price {
             font-size: 90px;
             line-height: 90px;
-            min-width: 342px;
             font-weight: 700;
             text-align: right;
         }
@@ -155,6 +154,15 @@
             animation-delay: 0.3s;
         }
 
+        .left-col {
+            margin-right: 24px;
+        }
+
+        .three-digits-decimal {
+            font-size: 56px;
+            line-height: 56px;
+        }
+
         @keyframes dot {
             0% {
                 opacity: 0;
@@ -174,7 +182,7 @@
 
     <div class="card">
         <div class="row card-moex">
-            <div class="col">
+            <div class="col left-col">
                 <div class="ticker">YNDX</div>
                 <div class="change"></div>
             </div>
@@ -183,7 +191,7 @@
             </div>
         </div>
         <div class="row card-forex-usd">
-            <div class="col">
+            <div class="col left-col">
                 <div class="ticker">USD</div>
                 <div class="change"></div>
             </div>
@@ -192,7 +200,7 @@
             </div>
         </div>
         <div class="row card-forex-eur">
-            <div class="col">
+            <div class="col left-col">
                 <div class="ticker">EUR</div>
                 <div class="change"></div>
             </div>
@@ -286,6 +294,16 @@
             }
         }
     });
+    const setForexContent = ({ change, price, currency }) => {
+        const splitDecimal = price.split('.');
+        const postfix = (change > 0 ? '+' : '') + change.toFixed(2).toString().replace('-', '−');
+        const color = change === 0 ? 'gray' : change > 0 ? 'red' : 'green';
+        const content = `${splitDecimal[0]}<span class="${splitDecimal[0].length === 3 ? 'three-digits-decimal' : 'decimal'}">.${splitDecimal[1]}</span><span class="symbol">₽</span>`;
+
+        $(`.card-forex-${currency} .price`).innerHTML = content;
+        $(`.card-forex-${currency} .change`).innerHTML = postfix;
+        $(`.card-forex-${currency} .change`).classList.add(color);
+    }
 
     // proxy to 'https://yfapi.net/v6/finance/quote?region=RU&lang=RU&symbols=YNDX%2CYNDX.ME%2CUSDRUB%3DX'
     const fetchPromise = fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
@@ -333,22 +351,19 @@
         }, false);
 
         // usdrub
-        let forexUSDPostfix = (forexUSDChange > 0 ? '+' : '') + forexUSDChange.toFixed(2).toString().replace('-', '−');
-        let forexUSDColor = forexUSDChange === 0 ? 'gray' : forexUSDChange > 0 ? 'red' : 'green';
-        let forexUSDContent = forexUSDPrice + '<span class="symbol">₽</span>';
-
-        $('.card-forex-usd .price').innerHTML = forexUSDContent;
-        $('.card-forex-usd .change').innerHTML = forexUSDPostfix;
-        $('.card-forex-usd .change').classList.add(forexUSDColor);
+        setForexContent({
+            change: forexUSDChange,
+            price: forexUSDPrice,
+            currency: 'usd',
+        });
 
         // eurrub
-        let forexEURPostfix = (forexEURChange > 0 ? '+' : '') + forexEURChange.toFixed(2).toString().replace('-', '−');
-        let forexEURColor = forexEURChange === 0 ? 'gray' : forexEURChange > 0 ? 'red' : 'green';
-        let forexEURContent = forexEURPrice + '<span class="symbol">₽</span>';
+        setForexContent({
+            change: forexEURChange,
+            price: forexEURPrice,
+            currency: 'eur',
+        });
 
-        $('.card-forex-eur .price').innerHTML = forexEURContent;
-        $('.card-forex-eur .change').innerHTML = forexEURPostfix;
-        $('.card-forex-eur .change').classList.add(forexEURColor);
         return mood;
     }).catch(e => {
         console.error(e);
