@@ -204,6 +204,15 @@
                 <div class="price"></div>
             </div>
         </div>
+        <div class="row card-forex-cny">
+            <div class="col">
+                <div class="ticker">CNY</div>
+                <div class="change"></div>
+            </div>
+            <div class="col">
+                <div class="price"></div>
+            </div>
+        </div>
 
         <table style="display: none">
             <tbody>
@@ -228,6 +237,14 @@
                     <td class="price" rowspan="2">…</td>
                 </tr>
                 <tr class="card-forex-eur">
+                    <td class="change"></td>
+                </tr>
+
+                <tr class="card-forex-cny">
+                    <td class="ticker">CNY</td>
+                    <td class="price" rowspan="2">…</td>
+                </tr>
+                <tr class="card-forex-cny">
                     <td class="change"></td>
                 </tr>
             </tbody>
@@ -306,6 +323,7 @@
         const moex = data.quoteResponse.result[1];
         const forexUSD = data.quoteResponse.result[2];
         const forexEUR = data.quoteResponse.result[3];
+        const forexCNY = data.quoteResponse.result[4];
 
         const moexPrice = moex.regularMarketPrice;
         const moexChange = moex.regularMarketChange;
@@ -315,6 +333,9 @@
 
         const forexEURPrice = forexEUR.regularMarketPrice.toFixed(2);
         const forexEURChange = forexEUR.regularMarketChange;
+
+        const forexCNYPrice = forexCNY.regularMarketPrice.toFixed(2);
+        const forexCNYChange = forexCNY.regularMarketChange;
 
         let mood = 0;
         mood += moexChange === 0 ? 0 : moexChange > 0 ? 1 : -1;
@@ -358,6 +379,13 @@
             change: forexEURChange,
             price: forexEURPrice,
             currency: 'eur',
+        });
+
+        // cnyrub
+        setForexContent({
+            change: forexCNYChange,
+            price: forexCNYPrice,
+            currency: 'cny',
         });
 
         return mood;
