@@ -219,6 +219,11 @@
 
     const animateTemplate = '<span class="dot dot-one">.</span><span class="dot dot-two">.</span><span class="dot dot-three">.</span>';
 
+    if (location.search !== '?cny=1') {
+        console.log('ok');
+        $('.card-forex-cny').style.display = 'none';
+    }
+
     [].slice.apply($$('.price')).forEach(e => e.innerHTML = animateTemplate);
 
     const backgroundPromise = new Promise((resolve, reject) => {
