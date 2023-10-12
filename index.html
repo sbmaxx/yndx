@@ -74,7 +74,7 @@
 
         .row {
             display: flex;
-            justify-content: flex-end;
+            justify-content: flex-start;
             gap: 24px;
         }
 
@@ -94,6 +94,7 @@
             padding-left: 12px;
             font-weight: 400;
             opacity: 0.8;
+            display: none;
         }
 
         .ticker {
@@ -266,10 +267,11 @@
         }
     });
     const setForexContent = ({ change, price, currency }) => {
-        const splitDecimal = price.split('.');
         const postfix = (change > 0 ? '+' : '') + change.toFixed(2).toString().replace('-', '−');
         const color = change === 0 ? 'gray' : change > 0 ? 'red' : 'green';
-        const content = `${splitDecimal[0]}<span class="${splitDecimal[0].length === 3 ? 'three-digits-decimal' : 'decimal'}">.${splitDecimal[1]}</span><span class="symbol">₽</span>`;
+
+        const splitDecimal = price.split('.');
+        const content = `<span class="decimal">${splitDecimal[0].length === 3 ? parseFloat(price).toFixed(1) : price}</span><span class="symbol">₽</span>`;
 
         $(`.card-forex-${currency} .price`).innerHTML = content;
         $(`.card-forex-${currency} .change`).innerHTML = postfix;
