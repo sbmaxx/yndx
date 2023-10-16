@@ -51,7 +51,10 @@
 
         .card {
             box-sizing: border-box;
-            background: linear-gradient(270deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0, 0.1) 60%);
+            background: radial-gradient(
+                circle at top right,
+                rgba(0,0,0,0.4), rgba(0,0,0,0)
+            );
             width: 100%;
             padding: 10px;
             bottom: 0;
@@ -64,7 +67,7 @@
 
         .row {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
         }
         .row + .row {
             margin-top: 18px;
@@ -77,28 +80,30 @@
 
         .ticker {
             color: #f3f3f3;
-            font-size: 134px;
-            line-height: 118px;
+            font-size: 48px;
+            line-height: 42px;
             text-shadow: 1px 1px 1px #8d8d8d;
-            filter: opacity(0.6);
+            text-align: right;
+            filter: opacity(0.9);
         }
 
         .price {
-            font-size: 72px;
-            line-height: 72px;
-            font-weight: 700;
+            font-size: 96px;
+            line-height: 80px;
             text-align: right;
             vertical-align: top;
             color: #fff;
             text-shadow: 1px 1px 1px #8d8d8d;
+            filter: opacity(0.7);
         }
 
         .change {
-            font-size: 48px;
-            line-height: 34px;
+            font-size: 38px;
+            line-height: 36px;
             text-align: right;
             font-weight: 700;
-            min-width: 200px
+            min-width: 144px;
+            filter: opacity(0.9);
         }
 
         .red {
@@ -122,38 +127,37 @@
     <div class="card">
         <div class="row card-moex">
             <div class="col">
-                <div class="ticker">YNDX</div>
-
+                <div class="price"></div>
             </div>
             <div class="col">
-                <div class="price"></div>
+                <div class="ticker">YNDX</div>
                 <div class="change"></div>
             </div>
         </div>
         <div class="row card-forex-usd">
             <div class="col">
-                <div class="ticker">USD</div>
+                <div class="price"></div>
             </div>
             <div class="col">
-                <div class="price"></div>
+                <div class="ticker">USD</div>
                 <div class="change"></div>
             </div>
         </div>
         <div class="row card-forex-eur">
             <div class="col">
-                <div class="ticker">EUR</div>
+                <div class="price"></div>
             </div>
             <div class="col">
-                <div class="price"></div>
+                <div class="ticker">EUR</div>
                 <div class="change"></div>
             </div>
         </div>
         <div class="row card-forex-cny">
             <div class="col">
-                <div class="ticker">CNY</div>
+                <div class="price"></div>
             </div>
             <div class="col">
-                <div class="price"></div>
+                <div class="ticker">CNY</div>
                 <div class="change"></div>
             </div>
         </div>
