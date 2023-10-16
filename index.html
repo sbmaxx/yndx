@@ -125,7 +125,7 @@
 
 <body>
     <div class="card">
-        <div class="row card-moex">
+        <div class="row card-yndx">
             <div class="col">
                 <div class="price"></div>
             </div>
@@ -134,7 +134,7 @@
                 <div class="change"></div>
             </div>
         </div>
-        <div class="row card-forex-usd">
+        <div class="row card-usd">
             <div class="col">
                 <div class="price"></div>
             </div>
@@ -143,7 +143,7 @@
                 <div class="change"></div>
             </div>
         </div>
-        <div class="row card-forex-eur">
+        <div class="row card-eur">
             <div class="col">
                 <div class="price"></div>
             </div>
@@ -152,7 +152,7 @@
                 <div class="change"></div>
             </div>
         </div>
-        <div class="row card-forex-cny">
+        <div class="row card-cny">
             <div class="col">
                 <div class="price"></div>
             </div>
@@ -170,67 +170,41 @@
     const $$ = document.querySelectorAll.bind(document);
 
     if (location.search !== '?cny=1') {
-        $('.card-forex-cny').style.display = 'none';
+        $('.card-cny').style.display = 'none';
     }
 
-    const backgroundPromise = new Promise((resolve, reject) => {
-        const typicalPhone = 'https://rozhdestvenskiy.ru/yndx-stock-server/image/phone' || 'https://source.unsplash.com/780x1688';
-        const typicalDesktop = 'https://rozhdestvenskiy.ru/yndx-stock-server/image/desktop' || 'https://source.unsplash.com/2560x1600';
-
-        const sadPhone = 'https://storage.yandexcloud.net/yndx-mikstime/touch-min.jpg';
-        const sadDesktop = 'https://storage.yandexcloud.net/yndx-mikstime/desktop-min.jpg';
-
-        const typicalImg = window.innerWidth <= 768 ? typicalPhone : typicalDesktop;
-        const SadImg = window.innerWidth <= 768 ? sadPhone : sadDesktop;
-
-        const typicalImage = new Image();
-        typicalImage.src = typicalImg;
-
-        const sadImage = new Image();
-        sadImage.src = SadImg;
-
-        setTimeout(() => {
-            reject();
-        }, 2000);
-
-        let typicalImageLoaded, sadImageLoaded;
-        typicalImage.onload = function(e) {
-            typicalImageLoaded = true;
-            onImgLoad();
-        };
-        sadImage.onload = function(e) {
-            sadImageLoaded = true;
-            onImgLoad();
-        };
-
-        function onImgLoad() {
-            if (typicalImageLoaded && sadImageLoaded) {
-                resolve({
-                    typicalImg,
-                    SadImg,
-                })
-            }
-        }
-    });
-    const setForexContent = ({ change, price, currency }) => {
+    const setContent = ({ change, price, ticker, inverse = false }) => {
         const strChange = change.toFixed(2);
         const postfix = (change > 0 && strChange !== '0.00' ? '+' : '') + strChange.replace('-', '−');
-        const color = change === 0 || strChange === '0.00' ? 'gray' : change > 0 ? 'red' : 'green';
+        const color = change === 0 || strChange === '0.00' ?
+            'gray' :
+            inverse === false && change > 0 ? 'red' : 'green';
         const content = price;
 
-        $(`.card-forex-${currency} .price`).innerHTML = content;
-        $(`.card-forex-${currency} .change`).innerHTML = postfix;
-        $(`.card-forex-${currency} .change`).classList.add(color);
+        $(`.card-${ticker} .price`).innerHTML = content;
+        $(`.card-${ticker} .change`).innerHTML = postfix;
+        $(`.card-${ticker} .change`).classList.add(color);
     }
 
-    // proxy to 'https://yfapi.net/v6/finance/quote?region=RU&lang=RU&symbols=YNDX%2CYNDX.ME%2CUSDRUB%3DX'
+    // 'https://source.unsplash.com/780x1688'
+    const imgs = [
+        'https://rozhdestvenskiy.ru/yndx-stock-server/image/phone',
+        'https://storage.yandexcloud.net/yndx-mikstime/touch-min.jpg'
+    ];
+
+    const backgroundPromise = Promise.all(imgs.map(src => new Promise((res, rej) => {
+        let i = new Image();
+        i.onload = e => res(src);
+        i.src = src;
+    })));
+
     const fetchPromise = fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
         const moex = data.quoteResponse.result[1];
         const forexUSD = data.quoteResponse.result[2];
         const forexEUR = data.quoteResponse.result[3];
         const forexCNY = data.quoteResponse.result[4];
 
-        const moexPrice = moex.regularMarketPrice;
+        const moexPrice = moex.regularMarketPrice.toFixed(2);
         const moexChange = moex.regularMarketChange;
 
         const forexUSDPrice = forexUSD.regularMarketPrice.toFixed(2);
@@ -246,52 +220,50 @@
         mood += moexChange === 0 ? 0 : moexChange > 0 ? 1 : -1;
         mood += forexUSDChange === 0 ? 0 : forexUSDChange < 0 ? 1 : -1;
 
-        // moex
-        let moexPostfix = (moexChange > 0 ? '+' : '') + moexChange.toFixed(2).replace('-', '−');
-        let moexColor = moexChange === 0 ? 'gray' : moexChange > 0 ? 'green' : 'red';
-        let moexContent = moexPrice.toFixed(2);
-
-        $('.card-moex .price').innerHTML = moexContent;
-        $('.card-moex .change').innerHTML = moexPostfix;
-        $('.card-moex .change').classList.add(moexColor);
+        // yndx
+        setContent({
+            change: moexChange,
+            price: moexPrice,
+            ticker: 'yndx',
+            inverse: true
+        });
 
         // usdrub
-        setForexContent({
+        setContent({
             change: forexUSDChange,
             price: forexUSDPrice,
-            currency: 'usd',
+            ticker: 'usd',
         });
 
         // eurrub
-        setForexContent({
+        setContent({
             change: forexEURChange,
             price: forexEURPrice,
-            currency: 'eur',
+            ticker: 'eur',
         });
 
         // cnyrub
-        setForexContent({
+        setContent({
             change: forexCNYChange,
             price: forexCNYPrice,
-            currency: 'cny',
+            ticker: 'cny',
         });
 
         return mood;
     }).catch(e => {
         console.error(e);
     });
-    Promise.allSettled([
-        backgroundPromise,
-        fetchPromise
-    ]).then(([backgroundRes, moodRes]) => {
-        const mood = moodRes.status === 'fulfilled' ? moodRes.value : 0;
 
-        if (backgroundRes.status === "fulfilled") {
-            const {SadImg, typicalImg} = backgroundRes.value;
-            document.body.style.backgroundImage = `url(${mood < 0 && Math.random() < 0.1 ? SadImg : typicalImg })`;
-        }
+    Promise.all([fetchPromise, backgroundPromise]).then(([fetchRes, backgroundRes]) => {
+        const mood = fetchRes;
+
+        const [typical, sad] = backgroundRes;
+
+        document.body.style.backgroundImage = `url(${mood < 0 && Math.random() < 0.1 ? sad : typical })`;
         document.body.classList.add('loaded');
-    })
+    }).catch(e => {
+        document.body.classList.add('loaded');
+    });
 </script>
 
 </html>
