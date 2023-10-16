@@ -209,8 +209,9 @@
         }
     });
     const setForexContent = ({ change, price, currency }) => {
-        const postfix = (change > 0 ? '+' : '') + change.toFixed(2).toString().replace('-', '−');
-        const color = change === 0 ? 'gray' : change > 0 ? 'red' : 'green';
+        const strChange = change.toFixed(2);
+        const postfix = (change > 0 && strChange !== '0.00' ? '+' : '') + strChange.replace('-', '−');
+        const color = change === 0 || strChange === '0.00' ? 'gray' : change > 0 ? 'red' : 'green';
         const content = price;
 
         $(`.card-forex-${currency} .price`).innerHTML = content;
