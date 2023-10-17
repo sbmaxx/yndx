@@ -171,22 +171,25 @@
         $('.card-cny').style.display = 'none';
     }
 
+    const getColor = (change, inverse) => {
+        if (change.toFixed(2) === '0.00') {
+            return 'gray';
+        }
+
+        if (inverse) {
+            return change > 0 ? 'green' : 'red';
+        }
+
+        return change > 0 ? 'red' : 'green';
+    }
+
     const setContent = ({ change, price, ticker, inverse = false }) => {
         const strChange = change.toFixed(2);
         const postfix = (change > 0 && strChange !== '0.00' ? '+' : '') + strChange.replace('-', '−');
 
-        let color;
-        if (strChange === '0.00') {
-            color = 'gray';
-        } else if (inverse) {
-            color = change > 0 ? 'green' : 'red';
-        } else {
-            color = change > 0 ? 'red' : 'green';
-        }
-
         $(`.card-${ticker} .price`).innerHTML = price;
         $(`.card-${ticker} .change`).innerHTML = postfix;
-        $(`.card-${ticker} .change`).classList.add(color);
+        $(`.card-${ticker} .change`).classList.add(getColor(change, inverse));
     }
 
     // 'https://source.unsplash.com/780x1688'
@@ -195,22 +198,20 @@
         'https://storage.yandexcloud.net/yndx-mikstime/desktop-min.jpg'
     ];
 
-    const backgroundPromise = Promise.all(imgs.map(src => new Promise((res, rej) => {
+    const preloadBackground = Promise.all(imgs.map(src => new Promise((res, rej) => {
         let i = new Image();
         i.onload = e => res(src);
         i.src = src;
     })));
 
-    const fetchPromise = fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
+    const getStocksData = fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
         const tickers = ['yndx', 'usd', 'eur', 'cny'];
 
-        return data.quoteResponse.result
-            .filter((r, i) => i > 0 && i <= 4)
-            .map((r, i) => ({
-                price: r.regularMarketPrice.toFixed(2),
-                change: r.regularMarketChange,
-                ticker: tickers[i]
-            }));
+        return data.quoteResponse.result.filter((r, i) => i > 0 && i <= 4).map((r, i) => ({
+            price: r.regularMarketPrice.toFixed(2),
+            change: r.regularMarketChange,
+            ticker: tickers[i]
+        }));
     }).catch(e => {
         console.error(e);
     });
@@ -224,17 +225,17 @@
         return mood;
     }
 
-    Promise.all([fetchPromise, backgroundPromise]).then(([fetchRes, backgroundRes]) => {
-        const mood = getMood(fetchRes);
+    Promise.all([preloadBackground, getStocksData]).then(([background, stocks]) => {
+        const mood = getMood(stocks);
 
-        fetchRes.forEach(({ change, price, ticker }) => setContent({
+        stocks.forEach(({ change, price, ticker }) => setContent({
             change,
             price,
             ticker,
             inverse: ticker === 'yndx'
         }));
 
-        const [typical, sad] = backgroundRes;
+        const [typical, sad] = background;
 
         document.body.style.backgroundImage = `url(${mood < 0 && Math.random() < 0.1 ? sad : typical })`;
     }).finally(() => {
