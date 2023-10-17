@@ -185,9 +185,8 @@
         } else {
             color = change > 0 ? 'red' : 'green';
         }
-        const content = price;
 
-        $(`.card-${ticker} .price`).innerHTML = content;
+        $(`.card-${ticker} .price`).innerHTML = price;
         $(`.card-${ticker} .change`).innerHTML = postfix;
         $(`.card-${ticker} .change`).classList.add(color);
     }
@@ -266,9 +265,8 @@
         const [typical, sad] = backgroundRes;
 
         document.body.style.backgroundImage = `url(${mood < 0 && Math.random() < 0.1 ? sad : typical })`;
-        document.body.classList.add('loaded');
-    }).catch(e => {
-        document.body.classList.add('loaded');
+    }).finally(() => {
+        setTimeout(() => document.body.classList.add('loaded'), 100);
     });
 </script>
 
