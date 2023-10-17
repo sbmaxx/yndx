@@ -229,11 +229,11 @@
     Promise.all([fetchPromise, backgroundPromise]).then(([fetchRes, backgroundRes]) => {
         const mood = getMood(fetchRes);
 
-        fetchRes.forEach(data => setContent({
-            change: data.change,
-            price: data.price,
-            ticker: data.ticker,
-            inverse: data.ticker === 'yndx'
+        fetchRes.forEach(({ change, price, ticker }) => setContent({
+            change,
+            price,
+            ticker,
+            inverse: ticker === 'yndx'
         }));
 
         const [typical, sad] = backgroundRes;
