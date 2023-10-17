@@ -204,19 +204,14 @@
     })));
 
     const fetchPromise = fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
-        const indexToTicker = {
-            '0': 'yndx',
-            '1': 'usd',
-            '2': 'eur',
-            '3': 'cny',
-        };
+        const tickers = ['yndx', 'usd', 'eur', 'cny'];
 
         return data.quoteResponse.result
             .filter((r, i) => i > 0 && i <= 4)
             .map((r, i) => ({
                 price: r.regularMarketPrice.toFixed(2),
                 change: r.regularMarketChange,
-                ticker: indexToTicker[i]
+                ticker: tickers[i]
             }));
     }).catch(e => {
         console.error(e);
