@@ -204,63 +204,44 @@
     })));
 
     const fetchPromise = fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
-        const moex = data.quoteResponse.result[1];
-        const forexUSD = data.quoteResponse.result[2];
-        const forexEUR = data.quoteResponse.result[3];
-        const forexCNY = data.quoteResponse.result[4];
+        const indexToTicker = {
+            '0': 'yndx',
+            '1': 'usd',
+            '2': 'eur',
+            '3': 'cny',
+        };
 
-        const moexPrice = moex.regularMarketPrice.toFixed(2);
-        const moexChange = moex.regularMarketChange;
-
-        const forexUSDPrice = forexUSD.regularMarketPrice.toFixed(2);
-        const forexUSDChange = forexUSD.regularMarketChange;
-
-        const forexEURPrice = forexEUR.regularMarketPrice.toFixed(2);
-        const forexEURChange = forexEUR.regularMarketChange;
-
-        const forexCNYPrice = forexCNY.regularMarketPrice.toFixed(2);
-        const forexCNYChange = forexCNY.regularMarketChange;
-
-        let mood = 0;
-        mood += moexChange === 0 ? 0 : moexChange > 0 ? 1 : -1;
-        mood += forexUSDChange === 0 ? 0 : forexUSDChange < 0 ? 1 : -1;
-
-        // yndx
-        setContent({
-            change: moexChange,
-            price: moexPrice,
-            ticker: 'yndx',
-            inverse: true
-        });
-
-        // usdrub
-        setContent({
-            change: forexUSDChange,
-            price: forexUSDPrice,
-            ticker: 'usd',
-        });
-
-        // eurrub
-        setContent({
-            change: forexEURChange,
-            price: forexEURPrice,
-            ticker: 'eur',
-        });
-
-        // cnyrub
-        setContent({
-            change: forexCNYChange,
-            price: forexCNYPrice,
-            ticker: 'cny',
-        });
-
-        return mood;
+        return data.quoteResponse.result
+            .filter((r, i) => i > 0 && i <= 4)
+            .map((r, i) => (console.log(i), {
+                price: r.regularMarketPrice.toFixed(2),
+                change: r.regularMarketChange,
+                ticker: indexToTicker[i]
+            }));
     }).catch(e => {
         console.error(e);
     });
 
+    const getMood = data => {
+        let mood = 0;
+
+        mood += data[0].change === 0 ? 0 : data[0].change > 0 ? 1 : -1;
+        mood += data[1].change === 0 ? 0 : data[1].change < 0 ? 1 : -1;
+
+        return mood;
+    }
+
     Promise.all([fetchPromise, backgroundPromise]).then(([fetchRes, backgroundRes]) => {
-        const mood = fetchRes;
+        const mood = getMood(fetchRes);
+
+        fetchRes.forEach(data => {
+            setContent({
+                change: data.change,
+                price: data.price,
+                ticker: data.ticker,
+                inverse: data.ticker === 'yndx'
+            });
+        });
 
         const [typical, sad] = backgroundRes;
 
