@@ -213,7 +213,7 @@
 
         return data.quoteResponse.result
             .filter((r, i) => i > 0 && i <= 4)
-            .map((r, i) => (console.log(i), {
+            .map((r, i) => ({
                 price: r.regularMarketPrice.toFixed(2),
                 change: r.regularMarketChange,
                 ticker: indexToTicker[i]
