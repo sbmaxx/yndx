@@ -176,9 +176,15 @@
     const setContent = ({ change, price, ticker, inverse = false }) => {
         const strChange = change.toFixed(2);
         const postfix = (change > 0 && strChange !== '0.00' ? '+' : '') + strChange.replace('-', '−');
-        const color = change === 0 || strChange === '0.00' ?
-            'gray' :
-            inverse === false && change > 0 ? 'red' : 'green';
+
+        let color;
+        if (strChange === '0.00') {
+            color = gray;
+        } else if (inverse) {
+            color = change > 0 ? 'green' : 'red';
+        } else {
+            color = change > 0 ? 'red' : 'green';
+        }
         const content = price;
 
         $(`.card-${ticker} .price`).innerHTML = content;
