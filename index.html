@@ -257,7 +257,10 @@
         const mood = getMood(stocks);
 
         if (stocksResult.cache) {
-            $('.cache').innerText = new Date(stocksResult.cache).toISOString();
+            $('.cache').innerText = [
+                new Date(stocksResult.cache).toLocaleDateString('ru-RU'),
+                new Date(stocksResult.cache).toLocaleTimeString('ru-RU')
+            ].join(' ');
         }
 
         stocks.forEach(({ change, price, ticker }) => setContent({
