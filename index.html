@@ -257,10 +257,14 @@
         const mood = getMood(stocks);
 
         if (stocksResult.cache) {
-            $('.cache').innerText = [
-                new Date(stocksResult.cache).toLocaleDateString('ru-RU'),
-                new Date(stocksResult.cache).toLocaleTimeString('ru-RU')
-            ].join(' ');
+            const isToday = (new Date()).toDateString() === new Date(stocksResult.cache).toDateString();
+            const date = [new Date(stocksResult.cache).toLocaleTimeString('ru-RU', { timeStyle: 'short' })];
+
+            if (!isToday) {
+                date.unshift(new Date(stocksResult.cache).toLocaleDateString('ru-RU', { timeStyle: 'short' }));
+            }
+
+            $('.cache').innerText = date.join(' ');
         }
 
         stocks.forEach(({ change, price, ticker }) => setContent({
