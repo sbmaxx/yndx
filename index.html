@@ -212,11 +212,12 @@
             $(`.card-${ticker} .change`).innerHTML = '';
             return;
         }
-        
+
+        const strPrice = price.toFixed(2);
         const strChange = change.toFixed(2);
         const postfix = (change > 0 && strChange !== '0.00' ? '+' : '') + strChange.replace('-', '−');
 
-        $(`.card-${ticker} .price`).innerHTML = price;
+        $(`.card-${ticker} .price`).innerHTML = strPrice;
         $(`.card-${ticker} .change`).innerHTML = postfix;
         $(`.card-${ticker} .change`).classList.add(getColor(change, inverse));
     }
@@ -239,7 +240,7 @@
         return {
             cache: data.cache,
             data: data.quoteResponse.result.filter((r, i) => i > 0 && i <= 4).map((r, i) => ({
-                price: r.regularMarketPrice.toFixed(2),
+                price: r.regularMarketPrice,
                 change: r.regularMarketChange,
                 ticker: tickers[i]
             }))
