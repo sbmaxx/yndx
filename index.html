@@ -209,7 +209,7 @@
     const setContent = ({ change, price, ticker, inverse = false }) => {
         if (price === null) {
             $(`.card-${ticker} .price`).innerHTML = '∞';
-            $(`.card-${ticker} .change`).innerHTML = '';
+            $(`.card-${ticker} .change`).innerHTML = '0.00';
             return;
         }
 
