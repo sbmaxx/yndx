@@ -206,10 +206,18 @@
         return change > 0 ? 'red' : 'green';
     }
 
-    const setContent = ({ change, price, ticker, inverse = false }) => {
+    const setContent = ({ change, price, fallback, ticker, inverse = false }) => {
         if (price === null) {
+            if (fallback) {
+                $(`.card-${ticker} .price`).innerHTML = fallback.toFixed(2);
+                $(`.card-${ticker} .change`).innerHTML = '0.00';
+                $(`.card-${ticker} .change`).classList.add('gray');
+                return;
+            }
+
             $(`.card-${ticker} .price`).innerHTML = '∞';
             $(`.card-${ticker} .change`).innerHTML = '0.00';
+            $(`.card-${ticker} .change`).classList.add('gray');
             return;
         }
 
@@ -240,6 +248,7 @@
         return {
             cache: data.cache,
             data: data.quoteResponse.result.filter((r, i) => i > 0 && i <= 4).map((r, i) => ({
+                fallback: r.marketPrice,
                 price: r.regularMarketPrice,
                 change: r.regularMarketChange,
                 ticker: tickers[i]
@@ -273,9 +282,10 @@
             $('.cache').innerText = date.join(' ');
         }
 
-        stocks.forEach(({ change, price, ticker }) => setContent({
+        stocks.forEach(({ change, price, fallback ticker }) => setContent({
             change,
             price,
+            fallback,
             ticker,
             inverse: ticker === 'yndx'
         }));
