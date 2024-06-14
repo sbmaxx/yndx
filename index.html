@@ -207,6 +207,12 @@
     }
 
     const setContent = ({ change, price, ticker, inverse = false }) => {
+        if (price === null) {
+            $(`.card-${ticker} .price`).innerHTML = '∞';
+            $(`.card-${ticker} .change`).innerHTML = '';
+            return;
+        }
+        
         const strChange = change.toFixed(2);
         const postfix = (change > 0 && strChange !== '0.00' ? '+' : '') + strChange.replace('-', '−');
 
