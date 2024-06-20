@@ -255,7 +255,7 @@
 
         document.body.style.backgroundImage = `url(${mood < 0 && Math.random() < 0.1 ? sad : typical })`;
 
-        if (params.has('cny')) {
+        if (!params.has('cny')) {
             $('.card-cny').style.display = 'none';
         }
 
