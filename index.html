@@ -197,12 +197,18 @@
     const getStocksData = fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
         return {
             cache: data.cache,
-            data: data.quoteResponse.result.filter((r, i) => i > 0 && i <= 4).map((r, i) => ({
-                fallback: r.marketPrice,
-                price: r.regularMarketPrice,
-                change: r.regularMarketChange,
-                ticker: r.ticker
-            }))
+            data: data.quoteResponse.result.filter((r, i) => i > 0 && i <= 4).map((r, i) => {
+                if (typeof r === 'string') {
+                    return r;
+                }
+
+                return {
+                    fallback: r.marketPrice,
+                    price: r.regularMarketPrice,
+                    change: r.regularMarketChange,
+                    ticker: r.ticker
+                }
+            })
         };
     }).catch(e => {
         console.error(e);
@@ -243,6 +249,8 @@
                 order = arr;
             }
         }
+
+        console.log(JSON.stringify(stocks, null, 4));
 
         const obj = stocks.reduce((acc, curr) => {
             // in case we have an error
