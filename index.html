@@ -250,8 +250,6 @@
             }
         }
 
-        console.log(JSON.stringify(stocks, null, 4));
-
         const obj = stocks.reduce((acc, curr) => {
             // in case we have an error
             if (typeof curr === 'string') {
