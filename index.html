@@ -246,7 +246,7 @@
 
         const obj = stocks.reduce((acc, curr) => {
             // in case we have an error
-            if (!curr.ticker) {
+            if (typeof curr === 'string') {
                 return acc;
             }
 
@@ -254,7 +254,7 @@
             return acc;
         }, {});
 
-        order.forEach(ticker => setContent(obj[ticker]));
+        order.filter(ticker => !!obj[ticker]).forEach(ticker => setContent(obj[ticker]));
 
         const [typical, sad] = background;
 
