@@ -240,7 +240,7 @@
 
         const params = new URLSearchParams(location.search);
 
-        let order = ['yndx', 'usd', 'cny', 'eur'];
+        let order = ['yndx', 'bmw', 'usd', 'cny', 'eur'];
 
         if (params.get('order')) {
             let arr = params.get('order').split(',').map(o => o.toLowerCase());
@@ -268,6 +268,10 @@
 
         if (!params.has('cny') && $('.card-cny')) {
             $('.card-cny').style.display = 'none';
+        }
+
+        if (!params.has('bmw') && $('.card-bmw')) {
+            $('.card-bmw').style.display = 'none';
         }
 
         if (!params.has('premium')) {
