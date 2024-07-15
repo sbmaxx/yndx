@@ -197,7 +197,7 @@
     const getStocksData = fetch('https://rozhdestvenskiy.ru/yndx-stock-server').then(r => r.json()).then(data => {
         return {
             cache: data.cache,
-            data: data.quoteResponse.result.filter((r, i) => i > 0 && i <= 4).map((r, i) => {
+            data: data.quoteResponse.result.filter((r, i) => i > 0).map((r, i) => {
                 if (typeof r === 'string') {
                     return r;
                 }
