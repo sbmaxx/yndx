@@ -48,7 +48,7 @@
         }
         
         .character-width {
-          font-size: 10px;
+          font-size: 12px;
           color: rgba(0,0,0,0.6);
         }
         
@@ -69,30 +69,30 @@
                 RU: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя',
             };
 
+            const createElement = (tag, className) => {
+                const el = document.createElement(tag);
+
+                if (className) el.classList.add(className);
+
+                return el;
+            }
+
             const createCharacter = (character) => {
-                const container = document.createElement('div');
-                const char = document.createElement('div');
-                const width = document.createElement('div');
+                const container = createElement('div', 'character-container')
+                const width = createElement('div', 'character-width')
 
-                container.classList.add('character-container');
-                char.classList.add('character-char');
-                width.classList.add('character-width');
-
-                char.innerText = character.char;
+                container.innerText = character.char;
 
                 if (character.width) {
                     width.innerText = character.width;
+                    container.appendChild(width);
                 }
-
-                container.appendChild(char);
-                container.appendChild(width);
 
                 return container;
             }
 
             const createLanguageContainer = (language, characters, context) => {
-                const languageContainer = document.createElement('div');
-                languageContainer.classList.add('language-container');
+                const languageContainer = createElement('div', 'language-container')
 
                 languageContainer.appendChild(createCharacter({ char: language }));
 
@@ -108,7 +108,7 @@
 
             function createHiPPICanvas(width, height) {
                 const ratio = window.devicePixelRatio;
-                const canvas = document.createElement("canvas");
+                const canvas = createElement("canvas");
 
                 canvas.width = width * ratio;
                 canvas.height = height * ratio;
@@ -121,8 +121,7 @@
 
             const canvas = createHiPPICanvas(500, 1000);
 
-            const languagesWrapper = document.createElement('div');
-            languagesWrapper.classList.add('languages-wrapper');
+            const languagesWrapper = createElement('div', 'languages-wrapper');
 
             Object.entries(languages).forEach(([k, v]) => {
                 const ctx = canvas.getContext("2d");
