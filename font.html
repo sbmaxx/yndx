@@ -1,0 +1,83 @@
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>canvas</title>
+    <style>
+        @font-face {
+            font-family: "YS Text";
+            src: url("https://yastatic.net/islands/_/PyVcRbwHetz0gOVWLonWH7Od8zM.woff2") format("woff2"), url("//yastatic.net/islands/_/bIx8jOfCEfR-mECoDUEZywDBuHA.woff") format("woff");
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "YS Text", Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+         :root {
+            --color-g-control-secondary: rgba(7, 28, 71, 0.06);
+            --color-g-text-primary: #fff;
+            --color-g-bg-primary: #161617;
+            --color-g-text-primary: #000;
+        }
+    </style>
+    <script type="module">
+        new FontFace('YS Text', 'url(https://yastatic.net/islands/_/PyVcRbwHetz0gOVWLonWH7Od8zM.woff2)').load().then(font => {
+            document.fonts.add(font);
+
+            function createHiPPICanvas(width, height) {
+                const ratio = window.devicePixelRatio;
+                const canvas = document.createElement("canvas");
+
+                canvas.width = width * ratio;
+                canvas.height = height * ratio;
+                canvas.style.width = width + "px";
+                canvas.style.height = height + "px";
+                canvas.getContext("2d").scale(ratio, ratio);
+
+                return canvas;
+            }
+
+            function drawGraph(selector) {
+                const canvas = document.querySelector(selector);
+                const ctx = canvas.getContext("2d");
+
+                ctx.clearRect(0, 0, 500, 1000);
+                ctx.font = '14px \'YS Text\'';
+
+                'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'.split('').forEach((letter, i) => {
+                    const measure = ctx.measureText(letter);
+                    const width = measure.width;
+                
+                    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                
+                    ctx.fillText(letter + ' — ' + width.toFixed(2), 0, 0 + 16 * (i + 1));
+                    ctx.stroke();    
+                });
+            }
+
+            const canvas = createHiPPICanvas(500, 1000);
+            document.querySelector('.canvas').appendChild(canvas);
+            drawGraph('canvas');
+        });
+    </script>
+</head>
+
+<body>
+    <div class="graph canvas"></div>
+</body>
+
+</html>
+
