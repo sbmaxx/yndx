@@ -67,6 +67,7 @@
             const languages = {
                 EN: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
                 RU: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя',
+                TR: 'İĞÜŞÖÇğüşöç',
             };
 
             const createElement = (tag, className) => {
@@ -78,12 +79,11 @@
             }
 
             const createCharacter = (character) => {
-                const container = createElement('div', 'character-container')
-                const width = createElement('div', 'character-width')
-
+                const container = createElement('div', 'character-container');
                 container.innerText = character.char;
 
                 if (character.width) {
+                    const width = createElement('div', 'character-width');
                     width.innerText = character.width;
                     container.appendChild(width);
                 }
@@ -120,7 +120,6 @@
             }
 
             const canvas = createHiPPICanvas(500, 1000);
-
             const languagesWrapper = createElement('div', 'languages-wrapper');
 
             Object.entries(languages).forEach(([k, v]) => {
