@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
 
@@ -32,10 +30,81 @@
             --color-g-bg-primary: #161617;
             --color-g-text-primary: #000;
         }
+
+        .character-container {
+          font-size: 14px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        
+        .character-container:not(:last-child) {
+            margin-bottom: 4px;
+        }
+        
+        .character-container:first-child {
+          font-size: 16px;
+          margin-bottom: 12px;
+        }
+        
+        .character-width {
+          font-size: 10px;
+          color: rgba(0,0,0,0.6);
+        }
+        
+        .language-container {
+          min-width: 100px;
+        }
+        
+        .languages-wrapper {
+          display: flex;
+        }
     </style>
     <script type="module">
         new FontFace('YS Text', 'url(https://yastatic.net/islands/_/PyVcRbwHetz0gOVWLonWH7Od8zM.woff2)').load().then(font => {
             document.fonts.add(font);
+
+            const languages = {
+                EN: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+                RU: 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя',
+            };
+
+            const createCharacter = (character) => {
+                const container = document.createElement('div');
+                const char = document.createElement('div');
+                const width = document.createElement('div');
+
+                container.classList.add('character-container');
+                char.classList.add('character-char');
+                width.classList.add('character-width');
+
+                char.innerText = character.char;
+
+                if (character.width) {
+                    width.innerText = character.width;
+                }
+
+                container.appendChild(char);
+                container.appendChild(width);
+
+                return container;
+            }
+
+            const createLanguageContainer = (language, characters, context) => {
+                const languageContainer = document.createElement('div');
+                languageContainer.classList.add('language-container');
+
+                languageContainer.appendChild(createCharacter({ char: language }));
+
+                characters.split('').forEach(char => {
+                    const measure = context.measureText(char);
+                    const width = measure.width.toFixed(2);
+
+                    languageContainer.appendChild(createCharacter({ char, width }));
+                });
+
+                return languageContainer;
+            }
 
             function createHiPPICanvas(width, height) {
                 const ratio = window.devicePixelRatio;
@@ -50,27 +119,19 @@
                 return canvas;
             }
 
-            function drawGraph(selector) {
-                const canvas = document.querySelector(selector);
-                const ctx = canvas.getContext("2d");
-
-                ctx.clearRect(0, 0, 500, 1000);
-                ctx.font = '14px \'YS Text\'';
-
-                'абвгдеёжзийклмнопрстуфхцчшщъыьэюя'.split('').forEach((letter, i) => {
-                    const measure = ctx.measureText(letter);
-                    const width = measure.width;
-                
-                    ctx.fillStyle = 'rgba(0,0,0,0.6)';
-                
-                    ctx.fillText(letter + ' — ' + width.toFixed(2), 0, 0 + 16 * (i + 1));
-                    ctx.stroke();    
-                });
-            }
-
             const canvas = createHiPPICanvas(500, 1000);
-            document.querySelector('.canvas').appendChild(canvas);
-            drawGraph('canvas');
+
+            const languagesWrapper = document.createElement('div');
+            languagesWrapper.classList.add('languages-wrapper');
+
+            Object.entries(languages).forEach(([k, v]) => {
+                const ctx = canvas.getContext("2d");
+                const languageContainer = createLanguageContainer(k, v, ctx);
+
+                languagesWrapper.appendChild(languageContainer);
+            });
+
+            document.body.appendChild(languagesWrapper);
         });
     </script>
 </head>
