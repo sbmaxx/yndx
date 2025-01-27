@@ -170,7 +170,9 @@
 
         change = change === null ? 0 : change;
         const strPrice = (price || fallback).toFixed(2);
-        let strChange = (change > 0 && change.toFixed(2) !== '0.00' ? '+' : '') + change.toFixed(2).replace('-', '−');
+        let decimalPlaces = (Math.abs(change)).toFixed(0).length >= 4 ? 1 : 2;
+        let strChange = (change > 0 && change.toFixed(decimalPlaces) !== '0.00' ? '+' : '') + change.toFixed(decimalPlaces).replace('-', '−');
+        strChange
 
         const before = $('.card .container').innerHTML;
 
