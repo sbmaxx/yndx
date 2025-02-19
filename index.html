@@ -172,11 +172,13 @@
         change = change === null ? 0 : change;
         changePercent = changePercent === null ? 0 : changePercent;
 
-        const strPrice = (price || fallback).toPrecision(2);
+        const strPrice = (price || fallback).toFixed(2);
 
-        const decimalPlaces = (Math.abs(change)).toPrecision(0).length >= 4 ? 1 : 2;
-        const strChange = (change > 0 ? '+' : '') + change.toPrecision(decimalPlaces).replace('-', '−');
-        const strChangePercent = (changePercent > 0 ? '+' : '') + changePercent.toPrecision(decimalPlaces).replace('-', '−');
+        const decimalPlaces = (Math.abs(change)).toFixed(0).length >= 4 ? 1 : 2;
+        // dirty hack. not showing green +0.00
+        let nChange = Number(change).toFixed(0);
+        const strChange = (nChange > 0 ? '+' : '') + change.toFixed(decimalPlaces).replace('-', '−');
+        const strChangePercent = (nChange > 0 ? '+' : '') + changePercent.toFixed(decimalPlaces).replace('-', '−') + '%';
 
         const before = $('.card .container').innerHTML;
 
@@ -215,7 +217,7 @@
                     fallback: r.marketPrice,
                     price: r.regularMarketPrice,
                     change: r.regularMarketChange,
-                    changePercent: r.regularMarketChangePercent
+                    changePercent: r.regularMarketChangePercent,
                     ticker: r.ticker,
                     inverse: r.inverse
                 }
