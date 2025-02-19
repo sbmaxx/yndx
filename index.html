@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yndx Stocks</title>
+    <title>YDEX Stocks</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link rel="shortcut icon" href="https://yastatic.net/s3/home-static/_/7c/7ccfee6f1e81b14c5bef535d1ad7b7e0.png" type="image/x-icon" />
@@ -163,16 +163,20 @@
         return change > 0 ? 'red' : 'green';
     }
 
-    const setContent = ({ change, price, fallback, ticker, inverse = false }) => {
+    const setContent = ({ change, changePercent, price, fallback, ticker, inverse = false }, showPercents) => {
         if (price === null && fallback === null) {
             return;
         }
 
+        // TODO: do we still need this?
         change = change === null ? 0 : change;
-        const strPrice = (price || fallback).toFixed(2);
-        let decimalPlaces = (Math.abs(change)).toFixed(0).length >= 4 ? 1 : 2;
-        let strChange = (change > 0 && change.toFixed(decimalPlaces) !== '0.00' ? '+' : '') + change.toFixed(decimalPlaces).replace('-', '−');
-        strChange
+        changePercent = changePercent === null ? 0 : changePercent;
+
+        const strPrice = (price || fallback).toPrecision(2);
+
+        const decimalPlaces = (Math.abs(change)).toPrecision(0).length >= 4 ? 1 : 2;
+        const strChange = (change > 0 ? '+' : '') + change.toPrecision(decimalPlaces).replace('-', '−');
+        const strChangePercent = (changePercent > 0 ? '+' : '') + changePercent.toPrecision(decimalPlaces).replace('-', '−');
 
         const before = $('.card .container').innerHTML;
 
@@ -183,12 +187,11 @@
             </div>
             <div class="col">
                 <div class="ticker">${ticker}</div>
-                <div class="change ${getColor(change, inverse)}">${strChange}</div>
+                <div class="change ${getColor(change, inverse)}">${showPercents ? strChangePercent : strChange}</div>
             </div>
         </div>`;
     }
 
-    // 'https://source.unsplash.com/780x1688'
     const imgs = [
         'https://rozhdestvenskiy.ru/yndx-stock-server/image/desktop',
         'https://storage.yandexcloud.net/yndx-mikstime/desktop-min.jpg'
@@ -196,7 +199,7 @@
 
     const preloadBackground = Promise.all(imgs.map(src => new Promise((res, rej) => {
         let i = new Image();
-        i.onload = e => res(src);
+        i.onload = () => res(src);
         i.src = src;
     })));
 
@@ -212,6 +215,7 @@
                     fallback: r.marketPrice,
                     price: r.regularMarketPrice,
                     change: r.regularMarketChange,
+                    changePercent: r.regularMarketChangePercent
                     ticker: r.ticker,
                     inverse: r.inverse
                 }
@@ -247,14 +251,12 @@
 
         const params = new URLSearchParams(location.search);
 
-        let order = ['ydex', 'nbis', 'moex', 'bmw', 'usd', 'cny', 'eur'];
+        let order = ['ydex', 'nbis', 'moex', 'usd', 'eur', 'cny'];
 
         if (params.get('order')) {
-            let arr = params.get('order').split(',').map(o => o.toLowerCase());
-            let length = arr.filter(elem => order.includes(elem));
-            if (length !== 0) {
-                order = arr;
-            }
+            try {
+                order = params.get('order').toLowerCase().split(',');
+            } catch(e) {}
         }
 
         const obj = stocks.reduce((acc, curr) => {
@@ -267,24 +269,11 @@
             return acc;
         }, {});
 
-        order.filter(ticker => !!obj[ticker]).forEach(ticker => setContent(obj[ticker]));
+        order.filter(ticker => !!obj[ticker]).forEach(ticker => setContent(obj[ticker], params.has('percents')));
 
         const [typical, sad] = background;
 
         document.body.style.backgroundImage = `url(${mood < 0 && Math.random() < 0.1 ? sad : typical })`;
-
-        if (!params.has('cny') && $('.card-cny')) {
-            $('.card-cny').style.display = 'none';
-        }
-
-        if (!params.has('moex') && $('.card-moex')) {
-            $('.card-moex').style.display = 'none';
-        }
-
-        // disable bmw for now
-        if (true || !params.has('bmw') && $('.card-bmw')) {
-            $('.card-bmw').style.display = 'none';
-        }
 
         if (!params.has('premium')) {
             $('.premium').style.display = 'none';
