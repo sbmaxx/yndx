@@ -163,7 +163,7 @@
         return change > 0 ? 'red' : 'green';
     }
 
-    const setContent = ({ change, changePercent, price, fallback, ticker, inverse = false }, showPercents) => {
+    const setContent = ({ change, changePercent, price, fallback, ticker, inverse = false }, showPercents, typo) => {
         if (price === null && fallback === null) {
             return;
         }
@@ -181,6 +181,14 @@
         const strChangePercent = (nChange > 0 ? '+' : '') + changePercent.toFixed(decimalPlaces).replace('-', '−') + '%';
 
         const before = $('.card .container').innerHTML;
+        let tickerStr = ticker;
+
+        if (typo && ticker.toLowerCase() === 'usd') {
+            tickerStr = 'лоддар';
+        }
+        if (typo && ticker.toLowerCase() === 'euro') {
+            tickerStr = 'уеро';
+        }
 
         $('.card .container').innerHTML = before + `
         <div class="row card-${ticker.toLowerCase()}">
@@ -188,7 +196,7 @@
                 <div class="price">${strPrice}</div>
             </div>
             <div class="col">
-                <div class="ticker">${ticker}</div>
+                <div class="ticker">${tickerStr}</div>
                 <div class="change ${getColor(change, inverse)}">${showPercents ? strChangePercent : strChange}</div>
             </div>
         </div>`;
@@ -271,7 +279,7 @@
             return acc;
         }, {});
 
-        order.filter(ticker => !!obj[ticker]).forEach(ticker => setContent(obj[ticker], params.has('percents')));
+        order.filter(ticker => !!obj[ticker]).forEach(ticker => setContent(obj[ticker], params.has('percents'), params.has('typo')));
 
         const [typical, sad] = background;
 
