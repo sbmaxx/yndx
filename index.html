@@ -65,10 +65,33 @@
             text-rendering: optimizeLegibility;
         }
 
+        .container {
+            --price-font-size: 96px;
+            --price-line-height: 80px;
+
+            --ticker-font-size: 48px;
+            --ticker-line-height: 42px;
+
+            --change-font-size: 38px;
+            --change-line-height: 36px;
+        }
+
+        .container:has(.row:nth-child(7)) {
+            --price-font-size: 78px;
+            --price-line-height: 68px;
+
+            --ticker-font-size: 42px;
+            --ticker-line-height: 38px;
+
+            --change-font-size: 32px;
+            --change-line-height: 28px;
+        }
+
         .row {
             display: flex;
             justify-content: flex-end;
         }
+
         .row + .row {
             margin-top: 12px;
         }
@@ -80,16 +103,16 @@
 
         .ticker {
             color: #f3f3f3;
-            font-size: 48px;
-            line-height: 42px;
+            font-size: var(--ticker-font-size);
+            line-height: var(--ticker-line-height);
             text-shadow: 1px 1px 1px #8d8d8d;
             text-align: right;
             filter: opacity(0.9);
         }
 
         .price {
-            font-size: 96px;
-            line-height: 80px;
+            font-size: var(--price-font-size);
+            line-height: var(--price-line-height);
             text-align: right;
             vertical-align: top;
             color: #fff;
@@ -98,8 +121,8 @@
         }
 
         .change {
-            font-size: 38px;
-            line-height: 36px;
+            font-size: var(--change-font-size);
+            line-height: var(--change-line-height);
             text-align: right;
             font-weight: 700;
             min-width: 170px;
