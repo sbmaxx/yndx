@@ -199,7 +199,7 @@
 
         const decimalPlaces = (Math.abs(change)).toFixed(0).length >= 4 ? 1 : 2;
         // dirty hack. not showing green +0.00
-        let nChange = Number(change).toFixed(0);
+        let nChange = Number(change).toFixed(decimalPlaces);
         const strChange = (nChange > 0 ? '+' : '') + change.toFixed(decimalPlaces).replace('-', '−');
         const strChangePercent = (nChange > 0 ? '+' : '') + changePercent.toFixed(decimalPlaces).replace('-', '−') + '%';
 
