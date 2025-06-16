@@ -226,8 +226,9 @@
     }
 
     const imgs = [
+        'https://storage.yandexcloud.net/yndx-mikstime/desktop-min.jpg',
+        'https://storage.yandexcloud.net/yndx-mikstime/bee-min.jpg',
         'https://rozhdestvenskiy.ru/yndx-stock-server/image/desktop',
-        'https://storage.yandexcloud.net/yndx-mikstime/desktop-min.jpg'
     ];
 
     const preloadBackground = Promise.all(imgs.map(src => new Promise((res, rej) => {
@@ -304,9 +305,16 @@
 
         order.filter(ticker => !!obj[ticker]).forEach(ticker => setContent(obj[ticker], params.has('percents'), params.has('typo')));
 
-        const [typical, sad] = background;
+        const chosenIndex = [
+            // sad
+            mood < 0 && Math.random() < 0.1,
+            // bee
+            mood > 0 && Math.random() < 0.1,
+            // typical
+            true
+        ].indexOf(true);
 
-        document.body.style.backgroundImage = `url(${mood < 0 && Math.random() < 0.1 ? sad : typical })`;
+        document.body.style.backgroundImage = `url(${background[chosenIndex] })`;
 
         if (!params.has('premium')) {
             $('.premium').style.display = 'none';
