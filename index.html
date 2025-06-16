@@ -231,6 +231,10 @@
         'https://rozhdestvenskiy.ru/yndx-stock-server/image/desktop',
     ];
 
+    if (location.search.includes('bee=1')) {
+        imgs[2] = 'https://pchel.rozhdestvenskiy.ru/frame';
+    }
+
     const preloadBackground = Promise.all(imgs.map(src => new Promise((res, rej) => {
         let i = new Image();
         i.onload = () => res(src);
