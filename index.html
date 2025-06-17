@@ -65,6 +65,14 @@
             text-rendering: optimizeLegibility;
         }
 
+        .reverse .card {
+            padding-left: 0px;
+            background: radial-gradient(
+                circle at top left,
+                rgba(0,0,0,0.6), rgba(0,0,0,0)
+            );
+        }
+
         .container {
             --price-font-size: 96px;
             --price-line-height: 80px;
@@ -90,6 +98,11 @@
         .row {
             display: flex;
             justify-content: flex-end;
+        }
+
+        .reverse .row {
+            justify-content: flex-end;
+            flex-flow: row-reverse;
         }
 
         .row + .row {
@@ -125,8 +138,16 @@
             line-height: var(--change-line-height);
             text-align: right;
             font-weight: 700;
-            min-width: 170px;
+            min-width: 160px;
             filter: opacity(0.9);
+        }
+
+        .reverse .price {
+            min-width: 260px;
+        }
+
+        .reverse .change {
+            min-width: 150px;
         }
 
         .cache {
@@ -186,6 +207,16 @@
         return change > 0 ? 'red' : 'green';
     }
 
+    const getDecimalPlaces = value => {
+        const length = (Math.abs(value)).toFixed(0).length;
+        
+        if (length >= 4) {
+            return 0;
+        }
+
+        return 2;
+    };
+
     const setContent = ({ change, changePercent, price, fallback, ticker, inverse = false }, showPercents, typo) => {
         if (price === null && fallback === null) {
             return;
@@ -195,13 +226,16 @@
         change = change === null ? 0 : change;
         changePercent = changePercent === null ? 0 : changePercent;
 
-        const strPrice = (price || fallback).toFixed(2);
+        const decimalPlacesPrice = getDecimalPlaces(price);
+        const decimalPlacesChange = getDecimalPlaces(change);
+        
+        const strPrice = (price || fallback).toFixed(decimalPlacesPrice);
 
-        const decimalPlaces = (Math.abs(change)).toFixed(0).length >= 4 ? 1 : 2;
         // dirty hack. not showing green +0.00
-        let nChange = Number(change).toFixed(decimalPlaces);
-        const strChange = (nChange > 0 ? '+' : '') + change.toFixed(decimalPlaces).replace('-', '−');
-        const strChangePercent = (nChange > 0 ? '+' : '') + changePercent.toFixed(decimalPlaces).replace('-', '−') + '%';
+        let nChange = Number(change).toFixed(decimalPlacesChange);
+        
+        const strChange = (nChange > 0 ? '+' : '') + change.toFixed(decimalPlacesChange).replace('-', '−');
+        const strChangePercent = (nChange > 0 ? '+' : '') + changePercent.toFixed(decimalPlacesChange).replace('-', '−') + '%';
 
         const before = $('.card .container').innerHTML;
         let tickerStr = ticker;
@@ -322,6 +356,10 @@
 
         if (!params.has('premium')) {
             $('.premium').style.display = 'none';
+        }
+
+        if (params.has('bee')) {
+            document.body.classList.add('reverse');    
         }
     }).finally(() => {
         document.body.classList.add('loaded');
